@@ -58,6 +58,7 @@
         "optional": "cpp",
         "list": "cpp",
         "forward_list": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "array": "cpp"
     }
 }
