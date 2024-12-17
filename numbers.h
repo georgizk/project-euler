@@ -10,6 +10,7 @@
 #include <list>
 #include <forward_list>
 #include <fstream>
+#include <stdexcept>
 
 inline bool isPalindrome(std::string_view str)
 {
@@ -259,6 +260,94 @@ inline void findPrimesUpTo(uint64_t upperBound)
     // }
 }
 
+class NaturalNumber
+{
+public:
+NaturalNumber() = default;
+NaturalNumber(std::string_view number)
+{
+    digits.reserve(number.size());
+    for (auto it{number.rbegin()}; it != number.rend(); ++it)
+    {
+        int digit{*it - '0'};
+        if (digit > 9 || digit < 0)
+        {
+            throw std::invalid_argument{std::string(number)};
+        } 
+        digits.push_back(static_cast<uint8_t>(digit));
+    }
+}
+uint8_t& operator[] (std::size_t idx)
+{
+    if (idx >= digits.size())
+    {
+        digits.resize(idx+1, 0);
+    }
+    return digits[idx];
+}
+
+std::vector<uint8_t> digits;
+};
+
+std::ostream& operator<<(std::ostream& os, const NaturalNumber& n)
+{
+    std::string s;
+    s.resize(n.digits.size(), '0');
+    std::transform(n.digits.rbegin(), n.digits.rend(), s.begin(), [](auto d)
+    {
+        return d + '0';
+    });
+    os << s;
+    return os;
+}
+
+uint8_t getDigit(const NaturalNumber& n, std::size_t idx)
+{
+    if (idx < n.digits.size())
+    {
+        return n.digits[idx];
+    }
+    return 0;
+}
+
+NaturalNumber& setDigit(NaturalNumber& n, std::size_t idx, uint8_t digit)
+{
+    if (idx >= n.digits.size())
+    {
+        n.digits.resize(idx + 1, 0);
+    }
+    n.digits[idx] = digit;
+    return n;
+}
+
+NaturalNumber& append(NaturalNumber& a, const NaturalNumber& b)
+{
+    a.digits.reserve(b.digits.size());
+    for (std::size_t i{0}; i < b.digits.size(); ++i)
+    {
+        setDigit(a, i, getDigit(a, i) + getDigit(b, i));
+        if (auto d{getDigit(a, i)}; d > 9)
+        {
+            setDigit(a, i, d - 10);
+            setDigit(a, i+1, 1 + getDigit(a, i+1));
+        }
+    }
+    for (std::size_t i{b.digits.size()}; i < a.digits.size() + 1; ++i)
+    {
+        if (auto d{getDigit(a, i)}; d > 9)
+        {
+            setDigit(a, i, d - 10);
+            setDigit(a, i+1, 1 + getDigit(a, i+1));
+        }
+    }
+    return a;
+}
+
+NaturalNumber add(const NaturalNumber& a, const NaturalNumber& b)
+{
+    NaturalNumber result{a};
+    return append(result, b);
+}
 // std::set<uint64_t> KNOWN_PRIMES{2};
 
 // inline bool isPrime(uint64_t val)
