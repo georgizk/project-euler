@@ -59,6 +59,8 @@
         "list": "cpp",
         "forward_list": "cpp",
         "fstream": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "map": "cpp",
+        "numeric": "cpp"
     }
 }
