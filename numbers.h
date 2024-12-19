@@ -217,3 +217,22 @@ NaturalNumber add(const NaturalNumber& a, const NaturalNumber& b)
     NaturalNumber result{a};
     return append(result, b);
 }
+
+NaturalNumber multiply(const NaturalNumber& a, const NaturalNumber& b)
+{
+    NaturalNumber result;
+    for (uint64_t j{0}; j < b.digits.size(); ++j)
+    {
+        for (uint64_t i{0}; i < a.digits.size(); ++i)
+        {
+            auto digitMult{b.digits[j] * a.digits[i]};
+            for (uint32_t k{0}; digitMult != 0; ++k)
+            {
+                auto [quotient, remainder] = std::div(digitMult + getDigit(result, i+j+k), 10);
+                digitMult = quotient;
+                setDigit(result, i + j + k, remainder);
+            }
+        }
+    }
+    return result;
+}

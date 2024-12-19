@@ -10,5 +10,5 @@
 int main()
 {
     auto primes = findPrimesInRange(2, 2'000'001);
-    std::cout << std::accumulate(primes.begin(), primes.end(), uint64_t{0});
+    std::cout << std::accumulate(primes.begin(), primes.end(), uint64_t{0}) << std::endl;
 }
